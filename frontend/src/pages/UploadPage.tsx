@@ -138,7 +138,11 @@ export default function UploadPage() {
                     </div>
                   </td>
                   <td style={{ padding: '16px 24px', textAlign: 'right' }}>
-                    <button className="btn-icon-only" style={{ padding: '6px', borderRadius: '8px' }}>
+                    <button
+                      className="btn-icon-only"
+                      style={{ padding: '6px', borderRadius: '8px' }}
+                      onClick={() => setIsModalOpen(true)}
+                    >
                       <Icons.Edit />
                     </button>
                   </td>
@@ -177,7 +181,6 @@ export default function UploadPage() {
                     </div>
                     <span>CSV File</span>
                   </div>
-                  <Icons.ChevronDown />
                 </div>
               </div>
 
