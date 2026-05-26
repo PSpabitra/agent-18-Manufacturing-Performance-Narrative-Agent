@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { listKpis, KPIRecord } from '../api/apiClient'
 import KPICard from '../components/KPICard'
+import { Filter, Search, RotateCcw } from 'lucide-react'
 
 export default function DashboardPage() {
   const [plant, setPlant] = useState('')
@@ -19,7 +20,7 @@ export default function DashboardPage() {
       const r = await listKpis({
         plant: plant || undefined, line: line || undefined, shift: shift || undefined,
         period_type: periodType || undefined,
-        start_date: start || undefined, end_date: end || undefined, limit: 1000,
+        start_date: start || undefined, end_date: end || undefined
       })
       setRows(r.data)
     } catch (e: any) {
@@ -52,41 +53,54 @@ export default function DashboardPage() {
 
   return (
     <div className="container">
-      <h1>KPI Dashboard</h1>
+      <div className="flex items-center justify-between gap-12 mb-24">
+        <h1>KPI Dashboard</h1>
+        <div className="flex gap-8">
+          <button className="ghost" onClick={() => {
+            setPlant(''); setLine(''); setShift(''); setPeriodType(''); setStart(''); setEnd('');
+            setTimeout(load, 0);
+          }} title="Reset Filters">
+            <RotateCcw className="w-4 h-4" />
+          </button>
+          <button onClick={load} disabled={loading} className="flex items-center gap-8">
+            <Search className="w-4 h-4" />
+            {loading ? 'Loading...' : 'Apply Filters'}
+          </button>
+        </div>
+      </div>
 
-      <div className="card">
-        <div className="grid grid-4 gap-12">
-          <div>
-            <div className="kpi-label">Plant</div>
-            <input value={plant} onChange={(e) => setPlant(e.target.value)} placeholder="e.g. Plant-1" />
+      <div className="card" style={{ padding: '16px 24px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-end' }}>
+          <div style={{ flex: '1 1 140px' }}>
+            <label className="kpi-label flex items-center gap-4" style={{ marginBottom: '6px', fontSize: '11px' }}>
+              <Filter className="w-3 h-3" /> Plant
+            </label>
+            <input value={plant} onChange={(e) => setPlant(e.target.value)} placeholder="All Plants" style={{ height: '36px' }} />
           </div>
-          <div>
-            <div className="kpi-label">Line</div>
-            <input value={line} onChange={(e) => setLine(e.target.value)} placeholder="e.g. Line-A" />
+          <div style={{ flex: '1 1 120px' }}>
+            <label className="kpi-label" style={{ marginBottom: '6px', fontSize: '11px' }}>Line</label>
+            <input value={line} onChange={(e) => setLine(e.target.value)} placeholder="All Lines" style={{ height: '36px' }} />
           </div>
-          <div>
-            <div className="kpi-label">Shift</div>
-            <input value={shift} onChange={(e) => setShift(e.target.value)} placeholder="A / B / C" />
+          <div style={{ flex: '0 1 100px' }}>
+            <label className="kpi-label" style={{ marginBottom: '6px', fontSize: '11px' }}>Shift</label>
+            <input value={shift} onChange={(e) => setShift(e.target.value)} placeholder="Any" style={{ height: '36px' }} />
           </div>
-          <div>
-            <div className="kpi-label">Period Type</div>
-            <select value={periodType} onChange={(e) => setPeriodType(e.target.value)}>
-              <option value="">all</option>
-              <option value="daily">daily</option>
-              <option value="weekly">weekly</option>
-              <option value="monthly">monthly</option>
+          <div style={{ flex: '1 1 120px' }}>
+            <label className="kpi-label" style={{ marginBottom: '6px', fontSize: '11px' }}>Period</label>
+            <select value={periodType} onChange={(e) => setPeriodType(e.target.value)} style={{ height: '36px' }}>
+              <option value="">All Periods</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
             </select>
           </div>
-          <div>
-            <div className="kpi-label">Start Date</div>
-            <input type="date" value={start} onChange={(e) => setStart(e.target.value)} />
+          <div style={{ flex: '1 1 150px' }}>
+            <label className="kpi-label" style={{ marginBottom: '6px', fontSize: '11px' }}>Start Date</label>
+            <input type="date" value={start} onChange={(e) => setStart(e.target.value)} style={{ height: '36px' }} />
           </div>
-          <div>
-            <div className="kpi-label">End Date</div>
-            <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <button onClick={load} disabled={loading}>{loading ? 'Loading...' : 'Apply'}</button>
+          <div style={{ flex: '1 1 150px' }}>
+            <label className="kpi-label" style={{ marginBottom: '6px', fontSize: '11px' }}>End Date</label>
+            <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} style={{ height: '36px' }} />
           </div>
         </div>
         {err && <div className="alert error mt-12">{err}</div>}
@@ -103,7 +117,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="card mt-24">
-        <h3>KPI Rows ({rows.length})</h3>
+        <h3 className="flex items-center justify-between">
+          <span>KPI Rows ({rows.length})</span>
+          <span className="muted" style={{ fontSize: '12px' }}>Showing top 200</span>
+        </h3>
         <div className="scroll-x">
           <table>
             <thead>

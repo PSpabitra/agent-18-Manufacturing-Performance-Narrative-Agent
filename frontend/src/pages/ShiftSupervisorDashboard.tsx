@@ -10,7 +10,7 @@ export default function ShiftSupervisorDashboard() {
   async function load() {
     setBusy(true)
     try {
-      const r = await listKpis({ shift, limit: 200 })
+      const r = await listKpis({ shift })
       setRows(r.data)
     } finally { setBusy(false) }
   }
