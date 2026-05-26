@@ -27,7 +27,7 @@ export default function LandingPage() {
         </p>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
           <button className="cta" onClick={() => nav('/login')}>Get Started for Free</button>
-          <button className="ghost" onClick={() => nav('/login')} style={{ border: 'none', fontWeight: 700 }}>Watch Demo Video</button>
+          {/* <button className="ghost" onClick={() => nav('/login')} style={{ border: 'none', fontWeight: 700 }}>Watch Demo Video</button> */}
         </div>
       </div>
 
@@ -130,12 +130,12 @@ export default function LandingPage() {
             <a href="#" className="muted">Privacy</a>
             <a href="#" className="muted">Terms</a>
           </div>
-          <div style={{ marginBottom: '12px' }}>
+          {/* <div style={{ marginBottom: '12px' }}>
             ⚙️ Manufacturing Performance Narrative Agent
           </div>
           <div>
             Powered by FastAPI · MySQL · ChromaDB · Mistral AI
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
