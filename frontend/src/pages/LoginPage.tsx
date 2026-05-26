@@ -23,7 +23,7 @@ export default function LoginPage() {
       <div className="card" style={{ width: 480, maxWidth: '92vw', padding: '40px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{ fontSize: '32px', marginBottom: '12px' }}>⚙️</div>
-          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>Welcome Back</h2>
+          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>Welcome To</h2>
           <p className="muted" style={{ marginTop: '8px' }}>Sign in to Manufacturing Performance Narrative Agent</p>
         </div>
 
