@@ -60,14 +60,11 @@ export default function UploadPage() {
       const res = await uploadFile(file)
       setMsg({ kind: 'success', text: `Successfully uploaded ${res.filename}` })
 
-      const newConnector = {
-        name: res.filename,
-        type: 'CSV',
-        detail: `Successfully parsed ${res.rows_parsed} rows`,
-        status: 'Active'
-      }
-
-      setConnectors(prev => [newConnector, ...prev.filter(c => c.status !== 'Active')])
+      setConnectors(prev => prev.map(c =>
+        c.type === 'CSV'
+          ? { ...c, detail: `Successfully parsed ${res.rows_parsed} rows`, status: 'Active' }
+          : c
+      ))
 
       setTimeout(() => {
         setIsModalOpen(false)
