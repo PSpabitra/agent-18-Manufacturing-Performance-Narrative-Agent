@@ -132,4 +132,16 @@ export function downloadPdfUrl(id: number) {
   return `${API_BASE}/reports/${id}/download/pdf`
 }
 
+export interface LoginResponse {
+  success: boolean
+  message: string
+  persona?: string
+  username?: string
+}
+
+export async function loginAPI(payload: { username: string, password: string }): Promise<LoginResponse> {
+  const { data } = await api.post('/auth/login', payload)
+  return data
+}
+
 export default api

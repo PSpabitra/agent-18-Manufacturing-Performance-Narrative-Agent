@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 
+import { loginAPI } from '../api/apiClient'
+
 export type Persona =
   | 'plant_manager'
   | 'operations_director'
@@ -34,7 +36,7 @@ export const PERSONA_HOME: Record<Persona, string> = {
 interface AuthState {
   persona: Persona | null
   username: string | null
-  login: (persona: Persona, username: string) => void
+  login: (username: string, password?: string) => Promise<void>
   logout: () => void
   canAccess: (path: string) => boolean
 }
@@ -45,7 +47,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [persona, setPersona] = useState<Persona | null>(() => localStorage.getItem('persona') as Persona | null)
   const [username, setUsername] = useState<string | null>(() => localStorage.getItem('username'))
 
-  const login = (p: Persona, u: string) => {
+  const login = async (u: string, password?: string) => {
+    let p: Persona | null = null
+    if (password) {
+      // Call the real backend login API
+      const res = await loginAPI({ username: u, password })
+      p = res.persona as Persona
+    }
+    if (!p) {
+      throw new Error("Unable to determine role")
+    }
     localStorage.setItem('persona', p)
     localStorage.setItem('username', u)
     setPersona(p)

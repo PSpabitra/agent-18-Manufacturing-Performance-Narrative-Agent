@@ -5,18 +5,24 @@ import { useAuth, Persona, PERSONA_LABELS, PERSONA_HOME } from '../context/AuthC
 export default function LoginPage() {
   const { login } = useAuth()
   const nav = useNavigate()
-  const [persona, setPersona] = useState<Persona | null>(null)
-  const [username, setUsername] = useState('demo.executive')
-  const [password, setPassword] = useState('••••••••')
+  const [username, setUsername] = useState('plant.manager')
+  const [password, setPassword] = useState('Password123')
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault()
-    if (!persona) return
-    login(persona, username || 'demo.executive')
-    nav('/app/dashboard')
+    setErrorMsg(null)
+    setLoading(true)
+    try {
+      await login(username, password)
+      nav('/app/dashboard')
+    } catch (err: any) {
+      setErrorMsg(err.response?.data?.detail || 'Invalid username or password')
+    } finally {
+      setLoading(false)
+    }
   }
-
-  const personas: Persona[] = ['plant_manager', 'operations_director', 'mfg_excellence_lead', 'cxo', 'shift_supervisor']
 
   return (
     <div className="login-wrap">
@@ -28,6 +34,12 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={submit}>
+          {errorMsg && (
+            <div style={{ padding: '12px', marginBottom: '20px', backgroundColor: 'var(--danger)', color: 'white', borderRadius: '8px', fontSize: '14px', textAlign: 'center' }}>
+              {errorMsg}
+            </div>
+          )}
+
           <div style={{ marginBottom: '20px' }}>
             <label className="kpi-label" style={{ marginBottom: '8px', display: 'block' }}>Username</label>
             <input
@@ -49,28 +61,12 @@ export default function LoginPage() {
             />
           </div>
 
-          <div style={{ marginBottom: '24px' }}>
-            <label className="kpi-label" style={{ marginBottom: '12px', display: 'block' }}>Select Role (Persona)</label>
-            <div className="persona-grid">
-              {personas.map((p) => (
-                <div
-                  key={p}
-                  className={`persona-card ${persona === p ? 'selected' : ''}`}
-                  onClick={() => setPersona(p)}
-                  style={{ padding: '12px', textAlign: 'center' }}
-                >
-                  <div style={{ fontWeight: 600, fontSize: '13px' }}>{PERSONA_LABELS[p]}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           <button
             type="submit"
             style={{ width: '100%', padding: '14px', fontSize: '16px' }}
-            disabled={!persona}
+            disabled={loading}
           >
-            Sign In
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
