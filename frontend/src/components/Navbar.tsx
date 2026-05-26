@@ -1,38 +1,47 @@
-import { NavLink, useNavigate } from 'react-router-dom'
-import { useAuth, PERSONA_LABELS, PERSONA_ROUTES } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { useAuth, PERSONA_LABELS } from '../context/AuthContext'
 
 export default function Navbar() {
   const { persona, username, logout } = useAuth()
   const nav = useNavigate()
 
-  const allowed = persona ? PERSONA_ROUTES[persona] : []
-  const navItems: { to: string; label: string }[] = []
-  if (persona === 'plant_manager') navItems.push({ to: '/app/plant-manager', label: 'Home' })
-  if (persona === 'operations_director') navItems.push({ to: '/app/operations-director', label: 'Home' })
-  if (persona === 'mfg_excellence_lead') navItems.push({ to: '/app/mfg-excellence', label: 'Home' })
-  if (persona === 'cxo') navItems.push({ to: '/app/cxo', label: 'Home' })
-  if (persona === 'shift_supervisor') navItems.push({ to: '/app/shift-supervisor', label: 'Home' })
-
-  if (allowed.includes('/app/upload')) navItems.push({ to: '/app/upload', label: 'Upload' })
-  if (allowed.includes('/app/dashboard')) navItems.push({ to: '/app/dashboard', label: 'Dashboard' })
-  if (allowed.includes('/app/reports/generate')) navItems.push({ to: '/app/reports/generate', label: 'Generate Report' })
-  if (allowed.includes('/app/reports/history')) navItems.push({ to: '/app/reports/history', label: 'Reports' })
-  if (allowed.includes('/app/chat')) navItems.push({ to: '/app/chat', label: 'Chatbot' })
-
   return (
-    <div className="navbar">
-      <div className="brand">⚙️ MPN Agent</div>
-      <nav>
-        {navItems.map((n) => (
-          <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive ? 'active' : '')}>
-            {n.label}
-          </NavLink>
-        ))}
-      </nav>
+    <header className="header">
       <div className="flex items-center gap-12">
-        {persona && <span className="muted">{username} · {PERSONA_LABELS[persona]}</span>}
-        <button className="ghost" onClick={() => { logout(); nav('/') }}>Logout</button>
+        <div className="brand" style={{ fontSize: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '24px' }}>⚙️</span>
+          <span style={{ fontWeight: 800, color: 'var(--primary)' }}>MPN</span>
+          <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>Agent</span>
+        </div>
       </div>
-    </div>
+
+      <div className="flex items-center gap-24">
+        {persona && (
+          <div className="flex items-center gap-12">
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontWeight: 600, fontSize: '14px' }}>{username}</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{PERSONA_LABELS[persona]}</div>
+            </div>
+            <div style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              background: 'var(--panel-2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              color: 'var(--primary)',
+              border: '1px solid var(--border)'
+            }}>
+              {username?.charAt(0).toUpperCase()}
+            </div>
+          </div>
+        )}
+        <button className="ghost" style={{ padding: '8px 16px' }} onClick={() => { logout(); nav('/') }}>
+          Logout
+        </button>
+      </div>
+    </header>
   )
 }

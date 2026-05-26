@@ -17,10 +17,10 @@ export const PERSONA_LABELS: Record<Persona, string> = {
 
 export const PERSONA_ROUTES: Record<Persona, string[]> = {
   plant_manager: ['/app/plant-manager', '/app/upload', '/app/dashboard', '/app/reports', '/app/reports/generate', '/app/reports/history', '/app/chat'],
-  operations_director: ['/app/operations-director', '/app/dashboard', '/app/reports', '/app/reports/generate', '/app/reports/history', '/app/chat'],
+  operations_director: ['/app/operations-director', '/app/upload', '/app/dashboard', '/app/reports', '/app/reports/generate', '/app/reports/history', '/app/chat'],
   mfg_excellence_lead: ['/app/mfg-excellence', '/app/upload', '/app/dashboard', '/app/reports', '/app/reports/generate', '/app/reports/history', '/app/chat'],
-  cxo: ['/app/cxo', '/app/reports', '/app/reports/history', '/app/chat'],
-  shift_supervisor: ['/app/shift-supervisor', '/app/dashboard', '/app/chat'],
+  cxo: ['/app/cxo', '/app/upload', '/app/dashboard', '/app/reports', '/app/reports/generate', '/app/reports/history', '/app/chat'],
+  shift_supervisor: ['/app/shift-supervisor', '/app/upload', '/app/dashboard', '/app/reports', '/app/reports/generate', '/app/reports/history', '/app/chat'],
 }
 
 export const PERSONA_HOME: Record<Persona, string> = {

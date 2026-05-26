@@ -6,51 +6,77 @@ export default function LoginPage() {
   const { login } = useAuth()
   const nav = useNavigate()
   const [persona, setPersona] = useState<Persona | null>(null)
-  const [username, setUsername] = useState('demo.user')
+  const [username, setUsername] = useState('demo.executive')
+  const [password, setPassword] = useState('••••••••')
 
-  function submit() {
+  function submit(e: React.FormEvent) {
+    e.preventDefault()
     if (!persona) return
-    login(persona, username || 'demo.user')
-    nav(PERSONA_HOME[persona])
+    login(persona, username || 'demo.executive')
+    nav('/app/dashboard')
   }
 
   const personas: Persona[] = ['plant_manager', 'operations_director', 'mfg_excellence_lead', 'cxo', 'shift_supervisor']
 
   return (
     <div className="login-wrap">
-      <div className="card" style={{ width: 460, maxWidth: '92vw' }}>
-        <h2>Sign in</h2>
-        <p className="muted">Select your role to access the dashboards you have permission for.</p>
-
-        <div style={{ marginTop: 14 }}>
-          <label className="kpi-label">Username</label>
-          <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="your.name" />
+      <div className="card" style={{ width: 480, maxWidth: '92vw', padding: '40px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ fontSize: '32px', marginBottom: '12px' }}>⚙️</div>
+          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>Welcome Back</h2>
+          <p className="muted" style={{ marginTop: '8px' }}>Sign in to Manufacturing Performance Narrative Agent</p>
         </div>
 
-        <div style={{ marginTop: 18 }}>
-          <label className="kpi-label">Choose Persona</label>
-          <div className="persona-grid mt-12">
-            {personas.map((p) => (
-              <div
-                key={p}
-                className={`persona-card ${persona === p ? 'selected' : ''}`}
-                onClick={() => setPersona(p)}
-              >
-                <div style={{ fontWeight: 600 }}>{PERSONA_LABELS[p]}</div>
-                <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
-                  {p === 'plant_manager' && 'Daily/weekly plant performance + reports'}
-                  {p === 'operations_director' && 'Multi-plant rollup + monthly reports'}
-                  {p === 'mfg_excellence_lead' && 'KPI thresholds, anomalies & governance'}
-                  {p === 'cxo' && 'Executive summary + leadership reports'}
-                  {p === 'shift_supervisor' && 'Shift KPIs + anomaly drilldown + chat'}
-                </div>
-              </div>
-            ))}
+        <form onSubmit={submit}>
+          <div style={{ marginBottom: '20px' }}>
+            <label className="kpi-label" style={{ marginBottom: '8px', display: 'block' }}>Username</label>
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. john.doe"
+              required
+            />
           </div>
-        </div>
 
-        <div style={{ marginTop: 18 }}>
-          <button onClick={submit} disabled={!persona}>Sign in</button>
+          <div style={{ marginBottom: '24px' }}>
+            <label className="kpi-label" style={{ marginBottom: '8px', display: 'block' }}>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password"
+              required
+            />
+          </div>
+
+          <div style={{ marginBottom: '24px' }}>
+            <label className="kpi-label" style={{ marginBottom: '12px', display: 'block' }}>Select Role (Persona)</label>
+            <div className="persona-grid">
+              {personas.map((p) => (
+                <div
+                  key={p}
+                  className={`persona-card ${persona === p ? 'selected' : ''}`}
+                  onClick={() => setPersona(p)}
+                  style={{ padding: '12px', textAlign: 'center' }}
+                >
+                  <div style={{ fontWeight: 600, fontSize: '13px' }}>{PERSONA_LABELS[p]}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            style={{ width: '100%', padding: '14px', fontSize: '16px' }}
+            disabled={!persona}
+          >
+            Sign In
+          </button>
+        </form>
+
+        <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px' }}>
+          <span className="muted">Don't have an account? </span>
+          <a href="#" onClick={(e) => e.preventDefault()} style={{ fontWeight: 600 }}>Contact Administrator</a>
         </div>
       </div>
     </div>

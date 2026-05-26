@@ -13,13 +13,19 @@ import CXODashboard from './pages/CXODashboard'
 import ShiftSupervisorDashboard from './pages/ShiftSupervisorDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
+import Sidebar from './components/Sidebar'
+import Footer from './components/Footer'
 import { useAuth } from './context/AuthContext'
 
 function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell">
       <Navbar />
-      {children}
+      <Sidebar />
+      <main className="main-content">
+        {children}
+      </main>
+      <Footer />
     </div>
   )
 }
