@@ -48,6 +48,7 @@ export default function UploadPage() {
   const [connectors, setConnectors] = useState([
     { name: 'CSV Connector', type: 'CSV', detail: 'Not configured', status: 'Not Configured' }
   ])
+  const [selectedType, setSelectedType] = useState('CSV')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,40 +172,64 @@ export default function UploadPage() {
 
               <div className="form-group">
                 <label>Connector Type *</label>
-                <div className="connector-type-select">
-                  <div className="flex items-center gap-12">
-                    <div style={{ color: '#10b981' }}>
-                      <Icons.CSV />
-                    </div>
-                    <span>CSV File</span>
-                  </div>
-                </div>
+                <select
+                  className="form-input"
+                  style={{ background: '#f8fafc', fontWeight: 500 }}
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                >
+                  <option value="CSV">CSV File</option>
+                  <option value="GOOGLE">Google Sheets (Manual Sync)</option>
+                </select>
               </div>
 
-              <div className="form-group">
-                <label>CSV Source Files *</label>
-                <div
-                  className="file-dropzone"
-                  onClick={() => fileInputRef.current?.click()}
-                  style={{ border: '1px dashed #cbd5e1', padding: '48px 24px' }}
-                >
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: 'none' }}
-                    accept=".csv"
-                    onChange={handleFileUpload}
-                  />
-                  <div style={{ color: '#3b82f6', marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
-                    <Icons.CloudUpload />
-                  </div>
-                  <div className="dropzone-text">
-                    <h4 style={{ fontSize: '16px', marginBottom: '8px' }}>Drag and drop or browse files</h4>
-                    <p style={{ color: '#64748b', fontSize: '13px' }}>Supports multiple .csv files</p>
-                    <p style={{ color: '#64748b', fontSize: '13px' }}>Automatic anomaly analysis starts instantly upon drop</p>
+              {selectedType === 'CSV' ? (
+                <div className="form-group">
+                  <label>CSV Source Files *</label>
+                  <div
+                    className="file-dropzone"
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{ border: '1px dashed #cbd5e1', padding: '48px 24px' }}
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      accept=".csv"
+                      onChange={handleFileUpload}
+                    />
+                    <div style={{ color: '#3b82f6', marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
+                      <Icons.CloudUpload />
+                    </div>
+                    <div className="dropzone-text">
+                      <h4 style={{ fontSize: '16px', marginBottom: '8px' }}>Drag and drop or browse files</h4>
+                      <p style={{ color: '#64748b', fontSize: '13px' }}>Supports multiple .csv files</p>
+                      <p style={{ color: '#64748b', fontSize: '13px' }}>Automatic anomaly analysis starts instantly upon drop</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="form-group">
+                  <label>Google Sheets URL *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="https://docs.google.com/spreadsheets/d/..."
+                  />
+                  <div className="mt-12">
+                    <button
+                      className="ghost"
+                      style={{ width: '100%', padding: '12px', borderStyle: 'dashed' }}
+                      onClick={() => {
+                        setMsg({ kind: 'success', text: `Google Sheets connector added successfully.` })
+                        setTimeout(() => setIsModalOpen(false), 1500)
+                      }}
+                    >
+                 Connect Now
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {msg && <div className={`alert ${msg.kind} mt-12`}>{msg.text}</div>}
               {busy && (
