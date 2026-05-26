@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { listKpis, KPIRecord } from '../api/apiClient'
 import KPICard from '../components/KPICard'
-import { Filter, Search, RotateCcw } from 'lucide-react'
+import { Filter, Search, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export default function DashboardPage() {
   const [plant, setPlant] = useState('')
@@ -14,8 +14,12 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState<string | null>(null)
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 10
+
   async function load() {
-    setLoading(true); setErr(null)
+    setLoading(true); setErr(null); setCurrentPage(1)
     try {
       const r = await listKpis({
         plant: plant || undefined, line: line || undefined, shift: shift || undefined,
@@ -50,6 +54,13 @@ export default function DashboardPage() {
       expVar,
     }
   }, [rows])
+
+  // Pagination logic
+  const totalPages = Math.ceil(rows.length / pageSize)
+  const paginatedRows = useMemo(() => {
+    const startIdx = (currentPage - 1) * pageSize
+    return rows.slice(startIdx, startIdx + pageSize)
+  }, [rows, currentPage])
 
   return (
     <div className="container">
@@ -119,10 +130,12 @@ export default function DashboardPage() {
       <div className="card mt-24">
         <h3 className="flex items-center justify-between">
           <span>KPI Rows ({rows.length})</span>
-          <span className="muted" style={{ fontSize: '12px' }}>Showing top 200</span>
+          <span className="muted" style={{ fontSize: '12px' }}>
+            Page {currentPage} of {totalPages || 1}
+          </span>
         </h3>
         <div className="scroll-x">
-          <table>
+          <table style={{ marginBottom: '16px' }}>
             <thead>
               <tr>
                 <th>Date</th><th>Plant</th><th>Line</th><th>Shift</th>
@@ -131,7 +144,7 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.slice(0, 200).map((r) => (
+              {paginatedRows.map((r) => (
                 <tr key={r.id}>
                   <td>{r.metric_date}</td><td>{r.plant}</td><td>{r.line}</td><td>{r.shift}</td>
                   <td>{r.production_volume}</td><td>{r.target_volume}</td>
@@ -140,9 +153,64 @@ export default function DashboardPage() {
                   <td>{r.expense_actual}</td><td>{r.expense_budget}</td>
                 </tr>
               ))}
+              {paginatedRows.length === 0 && !loading && (
+                <tr>
+                  <td colSpan={12} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                    No records found for the selected filters.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-12 mt-12">
+            <button
+              className="ghost"
+              style={{ padding: '6px 12px' }}
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            >
+              <ChevronLeft className="w-4 h-4" /> Previous
+            </button>
+            <div className="flex gap-4">
+              {[...Array(totalPages)].map((_, i) => {
+                const p = i + 1
+                // Show first, last, and pages around current
+                if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => setCurrentPage(p)}
+                      style={{
+                        padding: '6px 12px',
+                        minWidth: '36px',
+                        background: currentPage === p ? 'var(--primary)' : 'transparent',
+                        color: currentPage === p ? 'white' : 'var(--text)',
+                        border: '1px solid var(--border)'
+                      }}
+                    >
+                      {p}
+                    </button>
+                  )
+                }
+                if (p === currentPage - 2 || p === currentPage + 2) {
+                  return <span key={p} style={{ padding: '6px' }}>...</span>
+                }
+                return null
+              })}
+            </div>
+            <button
+              className="ghost"
+              style={{ padding: '6px 12px' }}
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            >
+              Next <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

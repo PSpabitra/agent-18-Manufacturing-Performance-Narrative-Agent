@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { chatQuery } from '../api/apiClient'
 
 interface Msg { who: 'user' | 'bot'; text: string; sources?: any[] }
@@ -9,6 +9,17 @@ export default function ChatBox({ plant, periodType }: { plant?: string; periodT
   ])
   const [q, setQ] = useState('')
   const [busy, setBusy] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [msgs, busy])
 
   async function send() {
     if (!q.trim() || busy) return
@@ -29,7 +40,7 @@ export default function ChatBox({ plant, periodType }: { plant?: string; periodT
 
   return (
     <div className="chat-window">
-      <div className="chat-messages">
+      <div className="chat-messages" ref={scrollRef}>
         {msgs.map((m, i) => (
           <div key={i} className={`chat-bubble ${m.who}`}>
             {m.text}
