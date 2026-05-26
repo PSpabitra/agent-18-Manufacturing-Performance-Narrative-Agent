@@ -42,15 +42,8 @@ interface AuthState {
 const AuthContext = createContext<AuthState | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [persona, setPersona] = useState<Persona | null>(null)
-  const [username, setUsername] = useState<string | null>(null)
-
-  useEffect(() => {
-    const p = localStorage.getItem('persona') as Persona | null
-    const u = localStorage.getItem('username')
-    if (p) setPersona(p)
-    if (u) setUsername(u)
-  }, [])
+  const [persona, setPersona] = useState<Persona | null>(() => localStorage.getItem('persona') as Persona | null)
+  const [username, setUsername] = useState<string | null>(() => localStorage.getItem('username'))
 
   const login = (p: Persona, u: string) => {
     localStorage.setItem('persona', p)
