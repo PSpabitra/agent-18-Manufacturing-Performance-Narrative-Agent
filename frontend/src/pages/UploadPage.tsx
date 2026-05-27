@@ -46,7 +46,8 @@ export default function UploadPage() {
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ kind: 'success' | 'error' | 'info'; text: string } | null>(null)
   const [connectors, setConnectors] = useState([
-    { name: 'CSV Connector', type: 'CSV', detail: 'Not configured', status: 'Not Configured' }
+    { name: 'CSV Connector', type: 'CSV', detail: 'Not configured', status: 'Not Configured' },
+        // { name: 'CS Connector', type: 'CSV', detail: 'Not configured', status: 'Not Configured' }
   ])
   const [selectedType, setSelectedType] = useState('CSV')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -179,7 +180,7 @@ export default function UploadPage() {
                   onChange={(e) => setSelectedType(e.target.value)}
                 >
                   <option value="CSV">CSV File</option>
-                  <option value="GOOGLE">Google Sheets (Manual Sync)</option>
+                <option value="GOOGLE">Google Sheets</option>
                 </select>
               </div>
 

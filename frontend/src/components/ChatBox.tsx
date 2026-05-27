@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { chatQuery } from '../api/apiClient'
+import { useAuth } from '../context/AuthContext'
 
 interface Msg { who: 'user' | 'bot'; text: string; sources?: any[] }
 
 export default function ChatBox({ plant, periodType }: { plant?: string; periodType?: string }) {
+const { username } = useAuth()
   const [msgs, setMsgs] = useState<Msg[]>([
     { who: 'bot', text: 'Ask me anything about manufacturing performance, e.g. "Why did scrap increase this week?"' },
   ])
@@ -29,7 +31,7 @@ export default function ChatBox({ plant, periodType }: { plant?: string; periodT
     const question = q
     setQ('')
     try {
-      const res = await chatQuery({ question, plant, period_type: periodType })
+      const res = await chatQuery({ question, plant, period_type: periodType,user_id: username || 'anonymous' })
       setMsgs((m) => [...m, { who: 'bot', text: res.answer, sources: res.sources }])
     } catch (e: any) {
       setMsgs((m) => [...m, { who: 'bot', text: `Error: ${e?.response?.data?.detail || e.message}` }])

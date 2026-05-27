@@ -120,6 +120,7 @@ export async function chatQuery(payload: {
   question: string
   plant?: string
   period_type?: string
+  user_id?: string
 }): Promise<ChatResponse> {
   const { data } = await api.post('/chat/query', payload)
   return data
