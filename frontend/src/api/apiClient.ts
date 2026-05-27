@@ -145,4 +145,53 @@ export async function loginAPI(payload: { username: string, password: string }):
   return data
 }
 
+// ─── Connector APIs ────────────────────────────────────────────────────────────
+
+export interface ConnectorRecord {
+  id: number
+  name: string
+  connector_type: string
+  detail?: string
+  status: string
+  source_url?: string
+  file_path?: string
+  last_file_id?: number
+  last_synced_at?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface ConnectorCreatePayload {
+  name: string
+  connector_type: string
+  detail?: string
+  status?: string
+  source_url?: string
+  file_path?: string
+}
+
+export async function createConnector(
+  payload: ConnectorCreatePayload
+): Promise<{ success: boolean; message: string; rows_parsed?: number; data: ConnectorRecord }> {
+  const { data } = await api.post('/connectors', payload)
+  return data
+}
+
+export async function listConnectors(): Promise<{
+  success: boolean
+  count: number
+  data: ConnectorRecord[]
+}> {
+  const { data } = await api.get('/connectors')
+  return data
+}
+
+export async function updateConnector(
+  id: number,
+  payload: Partial<ConnectorCreatePayload>
+): Promise<{ success: boolean; message: string; rows_parsed?: number; data: ConnectorRecord }> {
+  const { data } = await api.put(`/connectors/${id}`, payload)
+  return data
+}
+
 export default api
